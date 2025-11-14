@@ -14,6 +14,7 @@ Koins é um aplicativo PWA (Progressive Web App) desenvolvido para ajudar casais
 - **SCSS** - Pré-processador CSS com variáveis, mixins e nesting
 - **CSS Modules** - Estilização modular e encapsulada
 - **React Router v6** - Navegação entre páginas
+- **Lucide React** - Biblioteca moderna de ícones
 - **PWA** - Progressive Web App com suporte offline
 
 ## Estrutura do Projeto
@@ -127,10 +128,11 @@ O aplicativo é configurado como PWA e inclui:
 
 O aplicativo possui as seguintes rotas configuradas:
 
+- `/` - Redireciona automaticamente para `/dashboard`
 - `/login` - Página de login
 - `/cadastro` - Página de cadastro de nova conta
 - `/recuperar-senha` - Página de recuperação de senha
-- `/` - Redireciona automaticamente para `/login`
+- `/dashboard` - Página principal do aplicativo (após login)
 
 ## Funcionalidades
 
@@ -160,12 +162,40 @@ O aplicativo possui as seguintes rotas configuradas:
 - Opção de reenvio
 - Navegação de retorno ao login
 
+### Dashboard Principal ✅
+
+**3 Estados Diferentes:**
+
+1. **Sem Conexão (Sem Solicitação)**
+   - Estado vazio com ícone ilustrativo
+   - Formulário para enviar convite ao parceiro
+   - Design clean e direto
+
+2. **Solicitação Pendente**
+   - Card destacado com informações do solicitante
+   - Opções para aceitar ou recusar
+   - Design amigável e convidativo
+
+3. **Conectado (Dashboard Completo)**
+   - Card de balanço com gradiente laranja
+   - Indicação visual de quem deve para quem
+   - Lista de despesas (extrato)
+   - Botão flutuante para adicionar despesa
+
+**Componentes Criados:**
+- Header com logo, configurações e logout
+- BalanceCard - Mostra o saldo entre o casal
+- ExpenseItem - Item individual de despesa
+- FloatingButton - Botão destacado no footer
+- EmptyState - Estado vazio reutilizável
+
 ## Próximos Passos
 
 - [ ] Implementar autenticação real com backend
-- [ ] Dashboard principal
-- [ ] Gerenciamento de despesas compartilhadas
-- [ ] Sistema de conexão entre pares
+- [ ] Tela de adicionar/editar despesa
+- [ ] Tela de configurações
+- [ ] Sistema real de conexão entre pares
+- [ ] Página de extrato completo
 - [ ] Relatórios e gráficos financeiros
-- [ ] Configurações de perfil
 - [ ] Notificações push
+- [ ] Sistema de categorias de despesas

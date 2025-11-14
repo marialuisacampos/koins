@@ -1,0 +1,2 @@
+export { ExpenseItem } from "./ExpenseItem";
+

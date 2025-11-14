@@ -1,0 +1,69 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.card {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
+  color: $color-background;
+  border: none;
+}
+
+.header {
+  @include flex-column;
+  align-items: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+}
+
+.users {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.userBadge {
+  @include flex-center;
+  
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: $radius-full;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  text-transform: uppercase;
+}
+
+.connector {
+  @include flex-center;
+  
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.names {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  opacity: 0.9;
+}
+
+.balance {
+  text-align: center;
+}
+
+.balanceLabel {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-sm;
+}
+
+.balanceAmount {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-sm;
+  letter-spacing: -1px;
+}
+
+.balanceDescription {
+  font-size: $font-size-sm;
+  opacity: 0.8;
+}
+

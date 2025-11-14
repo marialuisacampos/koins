@@ -1,5 +1,6 @@
 import { useState, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Mail, CheckCircle } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Input } from "@/components/Input";
 import { Button } from "@/components/Button";
@@ -52,19 +53,7 @@ export const ForgotPassword = () => {
         <div className={styles.content}>
           <div className={styles.header}>
             <div className={styles.successIcon}>
-              <svg
-                width="64"
-                height="64"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#10B981"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                <polyline points="22 4 12 14.01 9 11.01" />
-              </svg>
+              <CheckCircle size={48} strokeWidth={2} />
             </div>
             <h1 className={styles.title}>Email enviado!</h1>
             <p className={styles.subtitle}>
@@ -112,17 +101,7 @@ export const ForgotPassword = () => {
               fullWidth
               autoComplete="email"
               autoFocus
-              icon={
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                </svg>
-              }
+              icon={<Mail size={20} />}
             />
 
             <Button

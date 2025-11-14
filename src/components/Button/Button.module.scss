@@ -1,11 +1,11 @@
-@import '../../styles/variables';
-@import '../../styles/mixins';
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
 
 .button {
   @include flex-center;
   @include transition(all $transition-base);
   @include focus-ring($color-primary);
-  
+
   font-weight: $font-weight-semibold;
   border-radius: $radius-md;
   outline: none;
@@ -96,4 +96,3 @@
     transform: rotate(360deg);
   }
 }
-

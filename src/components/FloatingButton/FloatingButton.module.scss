@@ -1,0 +1,45 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.button {
+  @include flex-center;
+  
+  gap: $spacing-md;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  padding: 20px $spacing-xl;
+  background: $color-primary;
+  color: $color-background;
+  border-radius: $radius-full;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  border: none;
+  cursor: pointer;
+  transition: all $transition-base;
+  box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
+
+  &:hover {
+    background: $color-primary-dark;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(255, 107, 53, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.icon {
+  @include flex-center;
+  
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.text {
+  font-size: $font-size-lg;
+}
+
