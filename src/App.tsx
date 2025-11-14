@@ -3,6 +3,7 @@ import { Login } from "@/pages/Login";
 import { SignUp } from "@/pages/SignUp";
 import { ForgotPassword } from "@/pages/ForgotPassword";
 import { Dashboard } from "@/pages/Dashboard";
+import { Expenses } from "@/pages/Expenses";
 
 export const App = () => {
   return (
@@ -13,6 +14,7 @@ export const App = () => {
         <Route path="/cadastro" element={<SignUp />} />
         <Route path="/recuperar-senha" element={<ForgotPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/extrato" element={<Expenses />} />
       </Routes>
     </BrowserRouter>
   );

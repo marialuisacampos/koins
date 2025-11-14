@@ -195,6 +195,13 @@
   color: $color-primary;
 }
 
+.fieldInfo {
+  display: flex;
+  justify-content: flex-end;
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
 .actions {
   @include flex-column;
   gap: $spacing-sm;

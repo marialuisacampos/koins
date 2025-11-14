@@ -1,0 +1,232 @@
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: $color-surface;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-lg;
+  background: $color-background;
+  border-bottom: 1px solid $color-border;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.backButton,
+.filterButton {
+  @include flex-center;
+
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-md;
+  border: none;
+  background: transparent;
+  color: $color-text-secondary;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  &:hover {
+    background: $color-surface;
+    color: $color-text-primary;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.filterActive {
+    background: $color-primary;
+    color: $color-background;
+
+    &:hover {
+      background: $color-primary-dark;
+    }
+  }
+}
+
+.filterPanel {
+  background: $color-background;
+  border-bottom: 1px solid $color-border;
+  animation: slideDown 200ms ease-out;
+}
+
+.filterContent {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.filterSection {
+  @include flex-column;
+  gap: $spacing-md;
+}
+
+.filterLabel {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filterOptions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: $spacing-sm;
+}
+
+.filterOption {
+  padding: $spacing-sm $spacing-md;
+  border: 2px solid $color-border;
+  border-radius: $radius-md;
+  background: transparent;
+  color: $color-text-secondary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  &:hover {
+    border-color: $color-primary;
+    color: $color-text-primary;
+  }
+
+  &.selected {
+    border-color: $color-primary;
+    background: $color-primary;
+    color: $color-background;
+  }
+}
+
+.filterActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-sm;
+  margin-top: $spacing-sm;
+}
+
+.activeFilter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm $spacing-lg;
+  background: rgba($color-primary, 0.1);
+  border-bottom: 1px solid rgba($color-primary, 0.2);
+}
+
+.activeFilterText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-primary;
+}
+
+.clearFilterButton {
+  @include flex-center;
+
+  width: 24px;
+  height: 24px;
+  border-radius: $radius-sm;
+  border: none;
+  background: transparent;
+  color: $color-primary;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  &:hover {
+    background: rgba($color-primary, 0.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.title {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+}
+
+.monthSection {
+  @include flex-column;
+  gap: $spacing-md;
+}
+
+.monthHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 $spacing-xs;
+}
+
+.monthTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  text-transform: capitalize;
+}
+
+.monthTotal {
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+}
+
+.expensesList {
+  @include flex-column;
+}
+
+.empty {
+  @include flex-center;
+
+  padding: $spacing-xxl;
+  text-align: center;
+}
+
+.emptyText {
+  font-size: $font-size-base;
+  color: $color-text-secondary;
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: $spacing-md;
+  }
+}
+

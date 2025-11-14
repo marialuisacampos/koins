@@ -164,7 +164,12 @@ export const Dashboard = () => {
           <section className={styles.expenses}>
             <div className={styles.expensesHeader}>
               <h2 className={styles.expensesTitle}>Extrato</h2>
-              <button className={styles.seeAllButton}>Ver tudo</button>
+              <button
+                className={styles.seeAllButton}
+                onClick={() => navigate("/extrato")}
+              >
+                Ver tudo
+              </button>
             </div>
 
             <Card padding="sm">

@@ -14,6 +14,7 @@ export interface ExpenseData {
   type: "transfer" | "payment";
   amount: number;
   splitHalf: boolean;
+  description?: string;
 }
 
 export const AddExpenseModal = ({
@@ -25,6 +26,8 @@ export const AddExpenseModal = ({
   const [amount, setAmount] = useState("");
   const [splitHalf, setSplitHalf] = useState(false);
   const [error, setError] = useState("");
+  const [description, setDescription] = useState("");
+  const maxDescriptionLength = 60;
 
   useEffect(() => {
     if (type === "transfer") {
@@ -73,6 +76,7 @@ export const AddExpenseModal = ({
       type,
       amount: finalAmount,
       splitHalf,
+      description: description.trim() || undefined,
     });
 
     handleCancel();
@@ -83,6 +87,7 @@ export const AddExpenseModal = ({
     setAmount("");
     setSplitHalf(false);
     setError("");
+    setDescription("");
     onClose();
   };
 
@@ -127,6 +132,24 @@ export const AddExpenseModal = ({
                 </span>
               </span>
             </label>
+          </div>
+        </div>
+
+        <div className={styles.section}>
+          <Input
+            type="text"
+            label="Descrição (opcional)"
+            placeholder="Ex: Compras da semana"
+            value={description}
+            onChange={(e) =>
+              setDescription(e.target.value.slice(0, maxDescriptionLength))
+            }
+            fullWidth
+          />
+          <div className={styles.fieldInfo}>
+            <span>
+              {description.length}/{maxDescriptionLength}
+            </span>
           </div>
         </div>
 
