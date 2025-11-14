@@ -9,6 +9,7 @@ import { FloatingButton } from "@/components/FloatingButton";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { Card } from "@/components/Card";
+import { AddExpenseModal, ExpenseData } from "@/components/AddExpenseModal";
 import styles from "./Dashboard.module.scss";
 
 type ConnectionStatus =
@@ -40,6 +41,7 @@ export const Dashboard = () => {
     email: "maria@email.com",
   });
   const [invitedEmail, setInvitedEmail] = useState("");
+  const [isAddExpenseModalOpen, setIsAddExpenseModalOpen] = useState(false);
 
   const [userName] = useState("João");
   const [partnerName] = useState("Maria");
@@ -80,7 +82,12 @@ export const Dashboard = () => {
   };
 
   const handleAddExpense = () => {
-    console.log("Adicionar despesa");
+    setIsAddExpenseModalOpen(true);
+  };
+
+  const handleSaveExpense = (data: ExpenseData) => {
+    console.log("Salvar despesa:", data);
+    setIsAddExpenseModalOpen(false);
   };
 
   const handleSendInvite = (email: string) => {
@@ -179,6 +186,12 @@ export const Dashboard = () => {
           Adicionar despesa
         </FloatingButton>
       </footer>
+
+      <AddExpenseModal
+        isOpen={isAddExpenseModalOpen}
+        onClose={() => setIsAddExpenseModalOpen(false)}
+        onSave={handleSaveExpense}
+      />
     </div>
   );
 };

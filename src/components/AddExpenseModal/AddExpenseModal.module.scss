@@ -1,0 +1,203 @@
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
+
+.form {
+  @include flex-column;
+  gap: $spacing-xl;
+}
+
+.section {
+  @include flex-column;
+  gap: $spacing-md;
+}
+
+.sectionLabel {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.radioGroup {
+  @include flex-column;
+  gap: $spacing-sm;
+}
+
+.radioOption {
+  display: block;
+  cursor: pointer;
+}
+
+.radioInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  border: 2px solid $color-border;
+  border-radius: $radius-md;
+  transition: all $transition-base;
+
+  .radioInput:checked ~ & {
+    border-color: $color-primary;
+    background: rgba($color-primary, 0.05);
+  }
+
+  .radioInput:focus-visible ~ & {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+
+  &:hover {
+    border-color: $color-primary;
+    background: rgba($color-primary, 0.02);
+  }
+}
+
+.radioCircle {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid $color-border;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+  margin-top: 2px;
+  transition: all $transition-base;
+
+  .radioInput:checked ~ .radioLabel & {
+    border-color: $color-primary;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      background: $color-primary;
+      border-radius: 50%;
+    }
+  }
+}
+
+.radioText {
+  @include flex-column;
+  gap: 4px;
+
+  strong {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+  }
+
+  small {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+  }
+}
+
+.toggleContainer {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  cursor: pointer;
+  padding: $spacing-md;
+  border: 2px solid $color-border;
+  border-radius: $radius-md;
+  transition: all $transition-base;
+
+  &:hover {
+    border-color: $color-primary;
+    background: rgba($color-primary, 0.02);
+  }
+}
+
+.toggleInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toggleSwitch {
+  display: block;
+  width: 48px;
+  height: 28px;
+  background: $color-border;
+  border-radius: $radius-full;
+  position: relative;
+  flex-shrink: 0;
+  transition: background $transition-base;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    background: $color-background;
+    border-radius: 50%;
+    transition: transform $transition-base;
+  }
+
+  .toggleInput:checked ~ & {
+    background: $color-primary;
+
+    &::after {
+      transform: translateX(20px);
+    }
+  }
+}
+
+.toggleLabel {
+  @include flex-column;
+  gap: 4px;
+
+  span {
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+  }
+
+  small {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+  }
+}
+
+.preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md;
+  background: $color-surface;
+  border-radius: $radius-md;
+  border: 1px solid $color-border;
+}
+
+.previewLabel {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-secondary;
+}
+
+.previewAmount {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+}
+
+.actions {
+  @include flex-column;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+}
+
