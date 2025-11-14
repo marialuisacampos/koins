@@ -1,0 +1,55 @@
+@import '../../styles/variables';
+
+.logoContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  filter: drop-shadow(0 2px 8px rgba(255, 107, 53, 0.15));
+}
+
+.animated {
+  .fishTop {
+    animation: swimTop 3s ease-in-out infinite;
+    transform-origin: 60px 52px;
+  }
+
+  .fishBottom {
+    animation: swimBottom 3s ease-in-out infinite;
+    transform-origin: 60px 68px;
+  }
+
+  .coin {
+    animation: pulse 3s ease-in-out infinite;
+  }
+}
+
+@keyframes swimTop {
+  0%, 100% {
+    transform: translateX(0) scale(1);
+  }
+  50% {
+    transform: translateX(-2px) scale(1.02);
+  }
+}
+
+@keyframes swimBottom {
+  0%, 100% {
+    transform: translateX(0) scale(1);
+  }
+  50% {
+    transform: translateX(2px) scale(1.02);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+

@@ -1,0 +1,61 @@
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin transition($properties...) {
+  transition: $properties;
+}
+
+@mixin hover-lift {
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}
+
+@mixin focus-ring($color: var(--color-primary)) {
+  &:focus-visible {
+    outline: 2px solid $color;
+    outline-offset: 2px;
+  }
+}
+
+@mixin gradient-bg {
+  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+}
+
+@mixin radial-decoration($r, $g, $b, $size, $opacity) {
+  content: '';
+  position: absolute;
+  width: $size;
+  height: $size;
+  background: radial-gradient(circle, rgba($r, $g, $b, $opacity) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+@mixin fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

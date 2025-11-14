@@ -1,0 +1,19 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="white" rx="100"/>
+  <circle cx="256" cy="256" r="186" stroke="#FF6B35" stroke-width="8" fill="none"/>
+  <circle cx="256" cy="256" r="165" stroke="#FF6B35" stroke-width="4" fill="none" opacity="0.3"/>
+  
+  <path d="M256 128 C192 128, 149 171, 149 221.9 C149 272.7, 192 315.7, 256 315.7 C256 315.7, 256 128, 256 128 Z" fill="#FF6B35" opacity="0.9"/>
+  <circle cx="205" cy="192" r="10.7" fill="white"/>
+  <path d="M163 221.9 Q179 213.3, 197 221.9" stroke="white" stroke-width="6.4" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M136 204.8 L120 187.7 L136 196.3 L128 179.2 L136 204.8 Z" fill="#FF6B35" opacity="0.7"/>
+  
+  <path d="M256 384 C320 384, 363 341, 363 290.1 C363 239.3, 320 196.3, 256 196.3 C256 196.3, 256 384, 256 384 Z" fill="#1A1A1A" opacity="0.85"/>
+  <circle cx="307" cy="320" r="10.7" fill="white"/>
+  <path d="M349 290.1 Q333 298.7, 315 290.1" stroke="white" stroke-width="6.4" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M376 307.2 L392 324.3 L376 315.7 L384 332.8 L376 307.2 Z" fill="#1A1A1A" opacity="0.7"/>
+  
+  <circle cx="256" cy="256" r="34.1" fill="#FFD700" opacity="0.9"/>
+  <text x="256" y="274" text-anchor="middle" font-size="42.7" font-weight="bold" fill="#FF6B35">K</text>
+</svg>
+

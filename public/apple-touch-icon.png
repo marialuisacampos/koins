@@ -1,0 +1,19 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="180" height="180" fill="white"/>
+  <circle cx="90" cy="90" r="65.6" stroke="#FF6B35" stroke-width="2.8" fill="none"/>
+  <circle cx="90" cy="90" r="58.5" stroke="#FF6B35" stroke-width="1.4" fill="none" opacity="0.3"/>
+  
+  <path d="M90 45 C67.5 45, 52.5 60, 52.5 78 C52.5 96, 67.5 111, 90 111 C90 111, 90 45, 90 45 Z" fill="#FF6B35" opacity="0.9"/>
+  <circle cx="72.4" cy="67.5" r="3.8" fill="white"/>
+  <path d="M57 78 Q63 75, 69.8 78" stroke="white" stroke-width="2.25" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M48 72 L42 66 L48 69 L45 63 L48 72 Z" fill="#FF6B35" opacity="0.7"/>
+  
+  <path d="M90 135 C112.5 135, 127.5 120, 127.5 102 C127.5 84, 112.5 69, 90 69 C90 69, 90 135, 90 135 Z" fill="#1A1A1A" opacity="0.85"/>
+  <circle cx="107.6" cy="112.5" r="3.8" fill="white"/>
+  <path d="M123 102 Q117 105, 110.2 102" stroke="white" stroke-width="2.25" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M132 108 L138 114 L132 111 L135 117 L132 108 Z" fill="#1A1A1A" opacity="0.7"/>
+  
+  <circle cx="90" cy="90" r="12" fill="#FFD700" opacity="0.9"/>
+  <text x="90" y="96.75" text-anchor="middle" font-size="15" font-weight="bold" fill="#FF6B35">K</text>
+</svg>
+

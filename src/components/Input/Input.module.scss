@@ -1,0 +1,80 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.container {
+  @include flex-column;
+  gap: $spacing-sm;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  position: absolute;
+  left: $spacing-md;
+  display: flex;
+  align-items: center;
+  color: $color-text-secondary;
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  padding: 14px $spacing-md;
+  font-size: $font-size-base;
+  color: $color-text-primary;
+  background: $color-background;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  transition: all $transition-base;
+  outline: none;
+  -webkit-appearance: none;
+
+  &::placeholder {
+    color: $color-text-disabled;
+  }
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+  }
+
+  &:disabled {
+    background: $color-surface;
+    color: $color-text-disabled;
+    cursor: not-allowed;
+  }
+}
+
+.withIcon {
+  padding-left: 48px;
+}
+
+.error {
+  border-color: $color-error;
+
+  &:focus {
+    border-color: $color-error;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  }
+}
+
+.errorMessage {
+  font-size: $font-size-xs;
+  color: $color-error;
+  margin-top: -4px;
+}
+
