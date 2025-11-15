@@ -1,31 +1,20 @@
 {
-  "name": "koins",
+  "name": "koins-monorepo",
   "version": "1.0.0",
-  "description": "Equilíbrio financeiro a dois",
-  "type": "module",
+  "description": "Koins - Equilíbrio financeiro a dois",
+  "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
-  },
-  "dependencies": {
-    "lucide-react": "^0.294.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2"
+    "dev": "concurrently \"npm run dev:pwa\" \"npm run dev:backend\"",
+    "dev:pwa": "cd pwa && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:pwa && npm run build:backend",
+    "build:pwa": "cd pwa && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "install:all": "npm install && cd pwa && npm install && cd ../backend && npm install",
+    "lint": "cd pwa && npm run lint && cd ../backend && npm run lint"
   },
   "devDependencies": {
-    "@types/react": "^18.3.5",
-    "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "eslint": "^8.57.0",
-    "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-react-refresh": "^0.4.11",
-    "sass": "^1.79.4",
-    "typescript": "^5.5.4",
-    "vite": "^5.4.3"
+    "concurrently": "^8.2.2"
   }
 }
+
