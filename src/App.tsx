@@ -4,6 +4,7 @@ import { SignUp } from "@/pages/SignUp";
 import { ForgotPassword } from "@/pages/ForgotPassword";
 import { Dashboard } from "@/pages/Dashboard";
 import { Expenses } from "@/pages/Expenses";
+import { Settings } from "@/pages/Settings";
 
 export const App = () => {
   return (
@@ -15,6 +16,7 @@ export const App = () => {
         <Route path="/recuperar-senha" element={<ForgotPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/extrato" element={<Expenses />} />
+        <Route path="/configuracoes" element={<Settings />} />
       </Routes>
     </BrowserRouter>
   );

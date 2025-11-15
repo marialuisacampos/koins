@@ -78,7 +78,7 @@ export const Dashboard = () => {
   };
 
   const handleSettings = () => {
-    console.log("Abrir configurações");
+    navigate("/configuracoes");
   };
 
   const handleAddExpense = () => {

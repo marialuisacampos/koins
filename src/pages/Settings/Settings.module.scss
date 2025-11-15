@@ -1,0 +1,279 @@
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: $color-surface;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-lg;
+  background: $color-background;
+  border-bottom: 1px solid $color-border;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.backButton {
+  @include flex-center;
+
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-md;
+  border: none;
+  background: transparent;
+  color: $color-text-secondary;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  &:hover {
+    background: $color-surface;
+    color: $color-text-primary;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.title {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.placeholder {
+  width: 40px;
+}
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xxl;
+}
+
+.section {
+  @include flex-column;
+  gap: $spacing-md;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.sectionIcon {
+  color: $color-text-secondary;
+}
+
+.dangerIcon {
+  color: $color-error;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.form {
+  @include flex-column;
+  gap: $spacing-lg;
+}
+
+.formTitle {
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.formDescription {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-top: -$spacing-sm;
+}
+
+.planCard {
+  position: relative;
+}
+
+.planBadge {
+  display: inline-block;
+  padding: $spacing-xs $spacing-md;
+  background: rgba($color-primary, 0.1);
+  color: $color-primary;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-md;
+}
+
+.planTitle {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-sm;
+}
+
+.planDescription {
+  font-size: $font-size-base;
+  color: $color-text-secondary;
+  line-height: 1.6;
+  margin-bottom: $spacing-lg;
+}
+
+.upgradeOffer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md;
+  background: $color-surface;
+  border-radius: $radius-md;
+  gap: $spacing-md;
+}
+
+.upgradeDetails {
+  @include flex-column;
+  gap: $spacing-xs;
+}
+
+.upgradePrice {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.upgradeSavings {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-success;
+}
+
+.dangerZone {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-lg;
+}
+
+.dangerInfo {
+  @include flex-column;
+  gap: $spacing-xs;
+  flex: 1;
+}
+
+.dangerTitle {
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.dangerDescription {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: 1.5;
+}
+
+.dangerButton {
+  color: $color-error !important;
+  border-color: $color-error !important;
+
+  &:hover {
+    background: rgba($color-error, 0.05) !important;
+  }
+}
+
+.cancelModal {
+  @include flex-column;
+  gap: $spacing-lg;
+}
+
+.cancelWarning {
+  font-size: $font-size-base;
+  color: $color-text-secondary;
+  line-height: 1.6;
+}
+
+.cancelForm {
+  @include flex-column;
+  gap: $spacing-sm;
+}
+
+.cancelLabel {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.cancelTextarea {
+  width: 100%;
+  padding: $spacing-md;
+  border: 2px solid $color-border;
+  border-radius: $radius-md;
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+  color: $color-text-primary;
+  background: $color-background;
+  resize: vertical;
+  transition: border-color $transition-base;
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+  }
+
+  &::placeholder {
+    color: $color-text-disabled;
+  }
+}
+
+.cancelCounter {
+  font-size: $font-size-xs;
+  color: $color-text-disabled;
+  text-align: right;
+}
+
+.cancelActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: $spacing-md;
+  }
+
+  .upgradeOffer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dangerZone {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cancelActions {
+    grid-template-columns: 1fr;
+  }
+}
+
