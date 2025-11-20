@@ -1,17 +1,24 @@
 import { useState, FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Input } from "@/components/Input";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
+import { authService } from "@/services/auth.service";
+import { ApiError } from "@/services/api";
 import styles from "./Login.module.scss";
 
 export const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+    general: "",
+  });
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -21,7 +28,11 @@ export const Login = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const newErrors = { email: "", password: "" };
+    const newErrors = {
+      email: "",
+      password: "",
+      general: "",
+    };
 
     if (!email) {
       newErrors.email = "Email é obrigatório";
@@ -43,9 +54,35 @@ export const Login = () => {
 
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      await authService.login({
+        email: email.toLowerCase(),
+        password,
+      });
+
+      navigate("/dashboard");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        if (error.errors) {
+          const apiErrors = { ...newErrors };
+          error.errors.forEach((err) => {
+            if (err.field in apiErrors) {
+              apiErrors[err.field as keyof typeof apiErrors] = err.message;
+            }
+          });
+          setErrors(apiErrors);
+        } else {
+          setErrors({ ...newErrors, general: error.message });
+        }
+      } else {
+        setErrors({
+          ...newErrors,
+          general: "Erro ao fazer login. Tente novamente.",
+        });
+      }
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -59,6 +96,10 @@ export const Login = () => {
 
         <Card padding="lg" elevated>
           <form onSubmit={handleSubmit} className={styles.form}>
+            {errors.general && (
+              <div className={styles.errorMessage}>{errors.general}</div>
+            )}
+
             <div className={styles.inputGroup}>
               <Input
                 type="email"

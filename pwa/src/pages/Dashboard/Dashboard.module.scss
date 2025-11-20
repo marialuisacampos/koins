@@ -1,24 +1,51 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
+.loading {
+  text-align: center;
+  color: $color-text-secondary;
+  font-size: $font-size-lg;
+}
+
+.emptyExpenses {
+  padding: $spacing-xl;
+  text-align: center;
+  color: $color-text-secondary;
+  font-size: $font-size-sm;
+}
+
 .container {
-  min-height: 100vh;
+  height: 100vh;
+  max-height: 100vh;
   display: flex;
   flex-direction: column;
   background: $color-surface;
+  overflow: hidden;
 }
 
 .main {
-  flex: 1;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding-bottom: 120px;
 }
 
+.mainWithFooter {
+  padding-bottom: 140px;
+}
+
 .mainCentered {
-  flex: 1;
+  flex: 1 1 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: $spacing-lg;
+  padding-bottom: 140px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
 }
 
 .content {
@@ -76,10 +103,76 @@
   z-index: 50;
 }
 
+.footerActions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, $color-background 0%, $color-background 80%, transparent 100%);
+  padding: $spacing-lg $spacing-lg $spacing-xl;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-lg;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+}
+
+.footerActionsCentered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-lg;
+}
+
+.footerIconButton {
+  @include flex-center;
+  
+  width: 56px;
+  height: 56px;
+  border-radius: $radius-full;
+  background: $color-surface;
+  color: $color-text-secondary;
+  border: 2px solid $color-border;
+  cursor: pointer;
+  transition: all $transition-base;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background: $color-background;
+    color: $color-text-primary;
+    border-color: $color-primary;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
 .inviteForm {
   @include flex-column;
   gap: $spacing-md;
   width: 100%;
+}
+
+.actionsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
 }
 
 .inviteSent {

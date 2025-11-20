@@ -1,13 +1,11 @@
-import { Settings, LogOut } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import styles from "./Header.module.scss";
 
 interface HeaderProps {
-  onSettings: () => void;
-  onLogout: () => void;
+  userName?: string;
 }
 
-export const Header = ({ onSettings, onLogout }: HeaderProps) => {
+export const Header = ({ userName }: HeaderProps) => {
   return (
     <header className={styles.header}>
       <div className={styles.container}>
@@ -16,23 +14,11 @@ export const Header = ({ onSettings, onLogout }: HeaderProps) => {
           <span className={styles.logoText}>Koins</span>
         </div>
 
-        <div className={styles.actions}>
-          <button
-            className={styles.iconButton}
-            onClick={onSettings}
-            aria-label="Configurações"
-          >
-            <Settings size={20} />
-          </button>
-
-          <button
-            className={styles.iconButton}
-            onClick={onLogout}
-            aria-label="Sair"
-          >
-            <LogOut size={20} />
-          </button>
-        </div>
+        {userName && (
+          <div className={styles.greeting}>
+            <span className={styles.greetingText}>Olá, {userName}!</span>
+          </div>
+        )}
       </div>
     </header>
   );

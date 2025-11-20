@@ -6,6 +6,7 @@ interface EmptyStateProps {
   title: string;
   description: string;
   action?: ReactNode;
+  children?: ReactNode;
 }
 
 export const EmptyState = ({
@@ -13,13 +14,16 @@ export const EmptyState = ({
   title,
   description,
   action,
+  children,
 }: EmptyStateProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.icon}>{icon}</div>
       <h2 className={styles.title}>{title}</h2>
       <p className={styles.description}>{description}</p>
-      {action && <div className={styles.action}>{action}</div>}
+      {(action || children) && (
+        <div className={styles.action}>{action || children}</div>
+      )}
     </div>
   );
 };

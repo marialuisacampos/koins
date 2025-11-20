@@ -1,0 +1,66 @@
+### Variáveis
+@baseUrl = http://localhost:3000
+@accessToken = seu-token-aqui
+@connectionId = id-da-conexao-aqui
+
+### 1. Listar conexões do usuário
+GET {{baseUrl}}/api/connections
+Authorization: Bearer {{accessToken}}
+
+### 2. Enviar convite para email cadastrado
+POST {{baseUrl}}/api/connections
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "partnerEmail": "partner@example.com"
+}
+
+### 3. Enviar convite para email não cadastrado
+POST {{baseUrl}}/api/connections
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "partnerEmail": "notregistered@example.com"
+}
+
+### 4. Aceitar convite
+PATCH {{baseUrl}}/api/connections/{{connectionId}}/accept
+Authorization: Bearer {{accessToken}}
+
+### 5. Rejeitar convite
+PATCH {{baseUrl}}/api/connections/{{connectionId}}/reject
+Authorization: Bearer {{accessToken}}
+
+### 6. Cancelar convite
+DELETE {{baseUrl}}/api/connections/{{connectionId}}
+Authorization: Bearer {{accessToken}}
+
+### Testes de erro
+
+### 7. Enviar convite sem token (deve falhar)
+POST {{baseUrl}}/api/connections
+Content-Type: application/json
+
+{
+  "partnerEmail": "test@example.com"
+}
+
+### 8. Enviar convite com email inválido (deve falhar)
+POST {{baseUrl}}/api/connections
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "partnerEmail": "email-invalido"
+}
+
+### 9. Aceitar convite com ID inválido (deve falhar)
+PATCH {{baseUrl}}/api/connections/invalid-id/accept
+Authorization: Bearer {{accessToken}}
+
+### 10. Cancelar convite de outro usuário (deve falhar)
+DELETE {{baseUrl}}/api/connections/{{connectionId}}
+Authorization: Bearer outro-token
+

@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  phone         String?
+  password_hash String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  deleted_at    DateTime?
+
+  connections_sent     Connection[] @relation("ConnectionFrom")
+  connections_received Connection[] @relation("ConnectionTo")
+  expenses_paid        Expense[]    @relation("ExpensePaidBy")
+  user_subscriptions   UserSubscription[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Connection {
+  id            String           @id @default(uuid())
+  user_id_from  String
+  user_id_to    String?
+  partner_email String?
+  invited_by    String
+  status        ConnectionStatus @default(pending)
+  created_at    DateTime         @default(now())
+  updated_at    DateTime         @updatedAt
+  accepted_at   DateTime?
+  deleted_at    DateTime?
+
+  user_from User      @relation("ConnectionFrom", fields: [user_id_from], references: [id], onDelete: Cascade)
+  user_to   User?     @relation("ConnectionTo", fields: [user_id_to], references: [id], onDelete: Cascade)
+  expenses  Expense[]
+
+  @@index([user_id_from, user_id_to])
+  @@index([partner_email])
+  @@index([status])
+  @@map("connections")
+}
+
+model Expense {
+  id            String      @id @default(uuid())
+  connection_id String
+  user_id_paid  String
+  amount        Decimal     @db.Decimal(10, 2)
+  type          ExpenseType
+  description   String?     @db.VarChar(200)
+  split_half    Boolean     @default(false)
+  expense_date  DateTime    @default(now())
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+  deleted_at    DateTime?
+
+  connection Connection @relation(fields: [connection_id], references: [id], onDelete: Cascade)
+  user       User       @relation("ExpensePaidBy", fields: [user_id_paid], references: [id], onDelete: Cascade)
+
+  @@index([connection_id, expense_date(sort: Desc)])
+  @@index([user_id_paid])
+  @@index([deleted_at])
+  @@map("expenses")
+}
+
+model Subscription {
+  id                 String   @id @default(uuid())
+  plan_type          PlanType
+  plan_price         Decimal  @db.Decimal(10, 2)
+  payment_provider   String   @default("abacate_pay")
+  payment_provider_id String?
+  status             SubscriptionStatus @default(active)
+  current_period_start DateTime
+  current_period_end   DateTime
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+  cancelled_at       DateTime?
+
+  user_subscriptions UserSubscription[]
+
+  @@index([status])
+  @@index([current_period_end])
+  @@map("subscriptions")
+}
+
+model UserSubscription {
+  id              String   @id @default(uuid())
+  user_id         String
+  subscription_id String
+  created_at      DateTime @default(now())
+
+  user         User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  subscription Subscription @relation(fields: [subscription_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, subscription_id])
+  @@index([user_id])
+  @@index([subscription_id])
+  @@map("user_subscriptions")
+}
+
+enum ConnectionStatus {
+  pending
+  accepted
+  rejected
+}
+
+enum ExpenseType {
+  expense
+  transfer
+}
+
+enum PlanType {
+  monthly
+  annual
+}
+
+enum SubscriptionStatus {
+  active
+  cancelled
+  expired
+}

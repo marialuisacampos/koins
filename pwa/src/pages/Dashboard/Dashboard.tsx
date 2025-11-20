@@ -1,6 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserPlus, Plus, Mail, CheckCircle } from "lucide-react";
+import {
+  UserPlus,
+  Plus,
+  Mail,
+  CheckCircle,
+  Clock,
+  Settings,
+  LogOut,
+} from "lucide-react";
 import { Header } from "@/components/Header";
 import { EmptyState } from "@/components/EmptyState";
 import { BalanceCard } from "@/components/BalanceCard";
@@ -10,18 +18,12 @@ import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { Card } from "@/components/Card";
 import { AddExpenseModal, ExpenseData } from "@/components/AddExpenseModal";
+import { authService } from "@/services/auth.service";
+import {
+  connectionService,
+  ConnectionState,
+} from "@/services/connection.service";
 import styles from "./Dashboard.module.scss";
-
-type ConnectionStatus =
-  | "no_connection"
-  | "invite_sent"
-  | "pending_request"
-  | "connected";
-
-interface PendingRequest {
-  name: string;
-  email: string;
-}
 
 interface Expense {
   id: string;
@@ -34,46 +36,70 @@ interface Expense {
 
 export const Dashboard = () => {
   const navigate = useNavigate();
-  const [connectionStatus, setConnectionStatus] =
-    useState<ConnectionStatus>("connected");
-  const [pendingRequest] = useState<PendingRequest>({
-    name: "Maria Silva",
-    email: "maria@email.com",
-  });
-  const [invitedEmail, setInvitedEmail] = useState("");
+  const [connectionState, setConnectionState] =
+    useState<ConnectionState | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isAddExpenseModalOpen, setIsAddExpenseModalOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const [userName] = useState("João");
-  const [partnerName] = useState("Maria");
-  const [balance] = useState(150.5);
-  const [expenses] = useState<Expense[]>([
-    {
-      id: "1",
-      description: "Mercado",
-      amount: 250.0,
-      paidBy: "Maria",
-      date: "2024-11-12",
-      category: "Alimentação",
-    },
-    {
-      id: "2",
-      description: "Conta de luz",
-      amount: 180.5,
-      paidBy: "João",
-      date: "2024-11-10",
-      category: "Contas",
-    },
-    {
-      id: "3",
-      description: "Netflix",
-      amount: 55.9,
-      paidBy: "Maria",
-      date: "2024-11-08",
-      category: "Entretenimento",
-    },
-  ]);
+  const user = authService.getUser();
+  const [userName] = useState(user?.name || "Usuário");
+  const [balance] = useState(0);
+  const [expenses] = useState<Expense[]>([]);
+
+  const getPartnerName = (): string => {
+    if (
+      connectionState?.status !== "connected" ||
+      !connectionState?.connection
+    ) {
+      return "Parceiro";
+    }
+
+    const connection = connectionState.connection;
+    const currentUserId = user?.id;
+
+    if (connection.user_from?.id === currentUserId) {
+      return connection.user_to?.name || "Parceiro";
+    }
+
+    if (connection.user_to?.id === currentUserId) {
+      return connection.user_from?.name || "Parceiro";
+    }
+
+    return "Parceiro";
+  };
+
+  const partnerName = getPartnerName();
+
+  useEffect(() => {
+    const checkAuth = () => {
+      if (!authService.isAuthenticated()) {
+        navigate("/login");
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
+
+  useEffect(() => {
+    loadConnectionState();
+  }, []);
+
+  const loadConnectionState = async () => {
+    try {
+      setIsLoading(true);
+      const state = await connectionService.getConnectionState();
+      setConnectionState(state);
+    } catch (error) {
+      console.error("Erro ao carregar estado da conexão:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleLogout = () => {
+    authService.logout();
     navigate("/login");
   };
 
@@ -90,218 +116,273 @@ export const Dashboard = () => {
     setIsAddExpenseModalOpen(false);
   };
 
-  const handleSendInvite = (email: string) => {
-    console.log("Enviar convite para:", email);
-    setInvitedEmail(email);
-    setConnectionStatus("invite_sent");
+  const handleSendInvite = async () => {
+    if (!inviteEmail || isProcessing) return;
+
+    try {
+      setIsProcessing(true);
+      await connectionService.sendInvite(inviteEmail);
+      await loadConnectionState();
+      setInviteEmail("");
+    } catch (error) {
+      console.error("Erro ao enviar convite:", error);
+      alert("Erro ao enviar convite. Tente novamente.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  const handleCancelInvite = () => {
-    console.log("Cancelar convite para:", invitedEmail);
-    setInvitedEmail("");
-    setConnectionStatus("no_connection");
+  const handleCancelInvite = async () => {
+    if (!connectionState?.connection || isProcessing) return;
+
+    try {
+      setIsProcessing(true);
+      await connectionService.cancelInvite(connectionState.connection.id);
+      await loadConnectionState();
+    } catch (error) {
+      console.error("Erro ao cancelar convite:", error);
+      alert("Erro ao cancelar convite. Tente novamente.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  const handleAcceptRequest = () => {
-    setConnectionStatus("connected");
+  const handleAcceptRequest = async () => {
+    if (!connectionState?.connection || isProcessing) return;
+
+    try {
+      setIsProcessing(true);
+      await connectionService.acceptConnection(connectionState.connection.id);
+      await loadConnectionState();
+    } catch (error) {
+      console.error("Erro ao aceitar convite:", error);
+      alert("Erro ao aceitar convite. Tente novamente.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  const handleRejectRequest = () => {
-    setConnectionStatus("no_connection");
+  const handleRejectRequest = async () => {
+    if (!connectionState?.connection || isProcessing) return;
+
+    try {
+      setIsProcessing(true);
+      await connectionService.rejectConnection(connectionState.connection.id);
+      await loadConnectionState();
+    } catch (error) {
+      console.error("Erro ao rejeitar convite:", error);
+      alert("Erro ao rejeitar convite. Tente novamente.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  if (connectionStatus === "no_connection") {
+  if (isLoading) {
     return (
       <div className={styles.container}>
-        <Header onSettings={handleSettings} onLogout={handleLogout} />
-        <main className={styles.mainCentered}>
-          <NoConnectionState onSendInvite={handleSendInvite} />
+        <Header userName={userName} />
+        <main className={`${styles.main} ${styles.mainCentered}`}>
+          <div className={styles.loading}>Carregando...</div>
         </main>
       </div>
     );
   }
 
-  if (connectionStatus === "invite_sent") {
-    return (
-      <div className={styles.container}>
-        <Header onSettings={handleSettings} onLogout={handleLogout} />
-        <main className={styles.mainCentered}>
-          <InviteSentState
-            email={invitedEmail}
-            onCancelInvite={handleCancelInvite}
-          />
-        </main>
-      </div>
-    );
-  }
-
-  if (connectionStatus === "pending_request") {
-    return (
-      <div className={styles.container}>
-        <Header onSettings={handleSettings} onLogout={handleLogout} />
-        <main className={styles.mainCentered}>
-          <PendingRequestState
-            request={pendingRequest}
-            onAccept={handleAcceptRequest}
-            onReject={handleRejectRequest}
-          />
-        </main>
-      </div>
-    );
-  }
+  const status = connectionState?.status || "no_connection";
 
   return (
     <div className={styles.container}>
-      <Header onSettings={handleSettings} onLogout={handleLogout} />
-      <main className={styles.main}>
-        <div className={styles.content}>
-          <BalanceCard
-            userName={userName}
-            partnerName={partnerName}
-            balance={balance}
-          />
+      <Header userName={userName} />
 
-          <section className={styles.expenses}>
-            <div className={styles.expensesHeader}>
-              <h2 className={styles.expensesTitle}>Extrato</h2>
-              <button
-                className={styles.seeAllButton}
-                onClick={() => navigate("/extrato")}
+      <main
+        className={`${styles.main} ${
+          status !== "connected" ? styles.mainCentered : styles.mainWithFooter
+        }`}
+      >
+        {status === "no_connection" && (
+          <EmptyState
+            icon={<UserPlus size={64} />}
+            title="Comece a gerenciar suas finanças"
+            description="Envie um convite para seu par começar a usar o Koins juntos"
+          >
+            <div className={styles.inviteForm}>
+              <Input
+                type="email"
+                placeholder="Email do seu par"
+                icon={<Mail size={20} />}
+                fullWidth
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+              />
+              <Button
+                variant="primary"
+                size="md"
+                onClick={handleSendInvite}
+                loading={isProcessing}
+                disabled={!inviteEmail || isProcessing}
               >
-                Ver tudo
-              </button>
+                Enviar convite
+              </Button>
             </div>
+          </EmptyState>
+        )}
 
-            <Card padding="sm">
-              <div className={styles.expensesList}>
-                {expenses.map((expense) => (
-                  <ExpenseItem key={expense.id} {...expense} />
-                ))}
-              </div>
-            </Card>
-          </section>
-        </div>
+        {status === "invite_sent" &&
+          (() => {
+            const email =
+              connectionState?.connection?.partner_email ||
+              connectionState?.connection?.user_to?.email ||
+              "seu par";
+            const isPending = !connectionState?.connection?.user_id_to;
+
+            return (
+              <EmptyState
+                icon={isPending ? <Clock size={64} /> : <Mail size={64} />}
+                title={isPending ? "Aguardando cadastro" : "Convite enviado!"}
+                description={
+                  isPending
+                    ? `Você enviou um convite para ${email}. Assim que seu par criar uma conta, o convite aparecerá para ele aceitar.`
+                    : `Seu convite foi enviado. Aguardando ${email} aceitar para começarem a usar o Koins juntos.`
+                }
+              >
+                <Button
+                  variant="secondary"
+                  size="md"
+                  onClick={handleCancelInvite}
+                  loading={isProcessing}
+                  fullWidth
+                >
+                  Cancelar convite
+                </Button>
+              </EmptyState>
+            );
+          })()}
+
+        {status === "pending_request" &&
+          (() => {
+            const inviter = connectionState?.connection?.user_from;
+
+            return (
+              <EmptyState
+                icon={<CheckCircle size={64} />}
+                title={`${inviter?.name || "Alguém"} quer se conectar!`}
+                description={`${
+                  inviter?.email || "Um usuário"
+                } enviou uma solicitação de conexão. Aceite para começarem a gerenciar suas finanças juntos.`}
+              >
+                <div className={styles.actionsGroup}>
+                  <Button
+                    variant="primary"
+                    size="md"
+                    onClick={handleAcceptRequest}
+                    loading={isProcessing}
+                    fullWidth
+                  >
+                    Aceitar
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="md"
+                    onClick={handleRejectRequest}
+                    disabled={isProcessing}
+                    fullWidth
+                  >
+                    Recusar
+                  </Button>
+                </div>
+              </EmptyState>
+            );
+          })()}
+
+        {status === "connected" && (
+          <>
+            <div className={styles.content}>
+              <BalanceCard
+                userName={userName}
+                partnerName={partnerName}
+                balance={balance}
+              />
+
+              <section className={styles.expenses}>
+                <div className={styles.expensesHeader}>
+                  <h2 className={styles.expensesTitle}>Extrato</h2>
+                  <button
+                    className={styles.seeAllButton}
+                    onClick={() => navigate("/extrato")}
+                  >
+                    Ver tudo
+                  </button>
+                </div>
+
+                <Card padding="sm">
+                  <div className={styles.expensesList}>
+                    {expenses.length === 0 ? (
+                      <div className={styles.emptyExpenses}>
+                        Nenhuma despesa registrada ainda
+                      </div>
+                    ) : (
+                      expenses.map((expense) => (
+                        <ExpenseItem key={expense.id} {...expense} />
+                      ))
+                    )}
+                  </div>
+                </Card>
+              </section>
+            </div>
+          </>
+        )}
       </main>
 
-      <footer className={styles.footer}>
-        <FloatingButton
-          onClick={handleAddExpense}
-          icon={<Plus size={22} strokeWidth={2.5} />}
-        >
-          Adicionar despesa
-        </FloatingButton>
-      </footer>
-
-      <AddExpenseModal
-        isOpen={isAddExpenseModalOpen}
-        onClose={() => setIsAddExpenseModalOpen(false)}
-        onSave={handleSaveExpense}
-      />
-    </div>
-  );
-};
-
-const NoConnectionState = ({
-  onSendInvite,
-}: {
-  onSendInvite: (email: string) => void;
-}) => {
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) {
-      setError("Email é obrigatório");
-      return;
-    }
-    onSendInvite(email);
-  };
-
-  return (
-    <EmptyState
-      icon={<UserPlus size={48} strokeWidth={2} />}
-      title="Conecte-se com seu par"
-      description="Para começar a gerenciar suas finanças juntos, envie um convite para seu parceiro(a)"
-      action={
-        <form onSubmit={handleSubmit} className={styles.inviteForm}>
-          <Input
-            type="email"
-            placeholder="Email do seu par"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={error}
-            fullWidth
-            icon={<Mail size={20} />}
-          />
-          <Button type="submit" variant="primary" size="lg" fullWidth>
-            Enviar convite
-          </Button>
-        </form>
-      }
-    />
-  );
-};
-
-const InviteSentState = ({
-  email,
-  onCancelInvite,
-}: {
-  email: string;
-  onCancelInvite: () => void;
-}) => {
-  return (
-    <div className={styles.inviteSent}>
-      <div className={styles.inviteSentIcon}>
-        <CheckCircle size={48} strokeWidth={2} />
+      <div className={styles.footerActions}>
+        {status === "connected" ? (
+          <>
+            <button
+              className={styles.footerIconButton}
+              onClick={handleSettings}
+              aria-label="Configurações"
+            >
+              <Settings size={24} />
+            </button>
+            <FloatingButton
+              icon={<Plus size={24} />}
+              onClick={handleAddExpense}
+              ariaLabel="Adicionar despesa"
+            />
+            <button
+              className={styles.footerIconButton}
+              onClick={handleLogout}
+              aria-label="Sair"
+            >
+              <LogOut size={24} />
+            </button>
+          </>
+        ) : (
+          <div className={styles.footerActionsCentered}>
+            <button
+              className={styles.footerIconButton}
+              onClick={handleSettings}
+              aria-label="Configurações"
+            >
+              <Settings size={24} />
+            </button>
+            <button
+              className={styles.footerIconButton}
+              onClick={handleLogout}
+              aria-label="Sair"
+            >
+              <LogOut size={24} />
+            </button>
+          </div>
+        )}
       </div>
-      <h2 className={styles.inviteSentTitle}>Convite enviado!</h2>
-      <p className={styles.inviteSentDescription}>
-        Enviamos um convite para <strong>{email}</strong>. Aguarde a resposta do
-        seu par para começar a gerenciar as finanças juntos.
-      </p>
-      <p className={styles.inviteSentInfo}>
-        Enquanto isso, você pode cancelar o convite e enviar para outro email,
-        se desejar.
-      </p>
 
-      <div className={styles.inviteSentActions}>
-        <Button variant="ghost" size="lg" fullWidth onClick={onCancelInvite}>
-          Cancelar convite
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-const PendingRequestState = ({
-  request,
-  onAccept,
-  onReject,
-}: {
-  request: PendingRequest;
-  onAccept: () => void;
-  onReject: () => void;
-}) => {
-  return (
-    <div className={styles.pendingRequest}>
-      <div className={styles.requestIcon}>
-        <UserPlus size={48} strokeWidth={2} />
-      </div>
-      <h2 className={styles.requestTitle}>Nova solicitação!</h2>
-      <p className={styles.requestDescription}>
-        <strong>{request.name}</strong> ({request.email}) quer se conectar com
-        você para gerenciar as finanças juntos.
-      </p>
-
-      <div className={styles.requestActions}>
-        <Button variant="primary" size="lg" fullWidth onClick={onAccept}>
-          Aceitar convite
-        </Button>
-        <Button variant="ghost" size="md" fullWidth onClick={onReject}>
-          Recusar
-        </Button>
-      </div>
+      {isAddExpenseModalOpen && (
+        <AddExpenseModal
+          isOpen={isAddExpenseModalOpen}
+          onClose={() => setIsAddExpenseModalOpen(false)}
+          onSave={handleSaveExpense}
+        />
+      )}
     </div>
   );
 };

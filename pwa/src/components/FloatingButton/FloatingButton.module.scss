@@ -4,16 +4,13 @@
 .button {
   @include flex-center;
   
-  gap: $spacing-md;
-  width: 100%;
-  max-width: 320px;
-  margin: 0 auto;
-  padding: 20px $spacing-xl;
+  gap: $spacing-sm;
+  width: 72px;
+  height: 72px;
+  padding: 0;
   background: $color-primary;
   color: $color-background;
   border-radius: $radius-full;
-  font-size: $font-size-lg;
-  font-weight: $font-weight-bold;
   border: none;
   cursor: pointer;
   transition: all $transition-base;

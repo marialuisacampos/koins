@@ -29,7 +29,11 @@ koins/
 
 - Fastify 4
 - TypeScript 5
-- CORS & Helmet
+- Prisma (ORM)
+- PostgreSQL (Supabase)
+- bcrypt (hash de senhas)
+- Zod (validação)
+- CORS, Helmet, Rate Limiting
 - JWT (autenticação)
 
 ## Desenvolvimento
@@ -82,15 +86,25 @@ pwa/
 
 ```
 backend/
+├── prisma/
+│   └── schema.prisma          # Modelos do banco
+├── scripts/
+│   ├── setup-env.sh           # Setup automático
+│   └── generate-secrets.js    # Gerador de JWT secrets
 ├── src/
-│   ├── routes/        # Rotas da API
-│   ├── controllers/   # Controllers
-│   ├── services/      # Lógica de negócio
-│   ├── models/        # Modelos de dados
-│   ├── middleware/    # Middlewares
-│   ├── config/        # Configurações
-│   └── server.ts      # Entry point
-└── package.json
+│   ├── config/
+│   │   └── database.ts        # Prisma config
+│   ├── middleware/
+│   │   ├── errorHandler.ts    # Error handling
+│   │   └── notFound.ts        # 404 handler
+│   ├── types/                 # TypeScript types
+│   ├── utils/                 # Crypto, logger, errors
+│   ├── routes/                # Rotas (próxima fase)
+│   ├── controllers/           # Controllers (próxima fase)
+│   ├── services/              # Business logic (próxima fase)
+│   └── server.ts              # Entry point
+├── SETUP.md                   # Guia de configuração
+└── README.md
 ```
 
 ## Funcionalidades
@@ -106,12 +120,26 @@ backend/
 - ✅ Componentes reutilizáveis
 - ✅ PWA com manifest e ícones
 
+### Backend (Fase 1 - Setup Completo)
+
+- ✅ Estrutura base do backend
+- ✅ Prisma ORM + Supabase
+- ✅ Models: User, Connection, Expense, Subscription
+- ✅ Error handling robusto
+- ✅ Logger estruturado
+- ✅ Segurança (Helmet, CORS, Rate Limiting, bcrypt)
+- ✅ Tipos TypeScript completos
+- ✅ Scripts de setup automatizados
+
 ### Em Desenvolvimento
 
-- 🚧 Backend API
+- 🚧 Autenticação JWT (signup, login, refresh)
+- 🚧 CRUD de Connections
+- 🚧 CRUD de Expenses
+- 🚧 Cálculo de saldo
 - 🚧 Landing Page
 - 🚧 Integração Backend + Frontend
-- 🚧 Banco de dados
+- 🚧 Webhooks de pagamento (Abacate Pay)
 
 ## Deploy
 

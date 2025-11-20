@@ -1,25 +1,27 @@
 import { useState, FormEvent } from "react";
-import { Link } from "react-router-dom";
-import { User, Mail, Phone, Lock, Users } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { User, Mail, Phone, Lock } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Input } from "@/components/Input";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
+import { authService } from "@/services/auth.service";
+import { ApiError } from "@/services/api";
 import styles from "./SignUp.module.scss";
 
 export const SignUp = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [partnerEmail, setPartnerEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({
     name: "",
     email: "",
     phone: "",
     password: "",
-    partnerEmail: "",
+    general: "",
   });
 
   const validateEmail = (email: string): boolean => {
@@ -53,7 +55,7 @@ export const SignUp = () => {
       email: "",
       phone: "",
       password: "",
-      partnerEmail: "",
+      general: "",
     };
 
     if (!name.trim()) {
@@ -76,12 +78,8 @@ export const SignUp = () => {
 
     if (!password) {
       newErrors.password = "Senha é obrigatória";
-    } else if (password.length < 6) {
-      newErrors.password = "Senha deve ter no mínimo 6 caracteres";
-    }
-
-    if (partnerEmail && !validateEmail(partnerEmail)) {
-      newErrors.partnerEmail = "Email do par inválido";
+    } else if (password.length < 8) {
+      newErrors.password = "Senha deve ter no mínimo 8 caracteres";
     }
 
     setErrors(newErrors);
@@ -92,9 +90,37 @@ export const SignUp = () => {
 
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      const cleanPhone = phone.replace(/\D/g, "");
+      const formattedPhone = cleanPhone.length === 11 ? `+55${cleanPhone}` : undefined;
+
+      await authService.signup({
+        name: name.trim(),
+        email: email.toLowerCase(),
+        phone: formattedPhone,
+        password,
+      });
+
+      navigate("/dashboard");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        if (error.errors) {
+          const apiErrors = { ...newErrors };
+          error.errors.forEach((err) => {
+            if (err.field in apiErrors) {
+              apiErrors[err.field as keyof typeof apiErrors] = err.message;
+            }
+          });
+          setErrors(apiErrors);
+        } else {
+          setErrors({ ...newErrors, general: error.message });
+        }
+      } else {
+        setErrors({ ...newErrors, general: "Erro ao criar conta. Tente novamente." });
+      }
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -110,6 +136,12 @@ export const SignUp = () => {
 
         <Card padding="lg" elevated>
           <form onSubmit={handleSubmit} className={styles.form}>
+            {errors.general && (
+              <div className={styles.errorMessage}>
+                {errors.general}
+              </div>
+            )}
+            
             <div className={styles.inputGroup}>
               <Input
                 type="text"
@@ -159,23 +191,6 @@ export const SignUp = () => {
                 autoComplete="new-password"
                 icon={<Lock size={20} />}
               />
-
-              <div className={styles.partnerSection}>
-                <Input
-                  type="email"
-                  label="Email do seu par (opcional)"
-                  placeholder="par@email.com"
-                  value={partnerEmail}
-                  onChange={(e) => setPartnerEmail(e.target.value)}
-                  error={errors.partnerEmail}
-                  fullWidth
-                  autoComplete="off"
-                  icon={<Users size={20} />}
-                />
-                <p className={styles.helperText}>
-                  Se seu par já tem cadastro, conecte suas contas
-                </p>
-              </div>
             </div>
 
             <Button

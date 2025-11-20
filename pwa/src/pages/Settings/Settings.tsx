@@ -1,10 +1,12 @@
 import { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Lock, CreditCard, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Lock, AlertTriangle } from "lucide-react";
 import { Card } from "@/components/Card";
 import { Input } from "@/components/Input";
 import { Button } from "@/components/Button";
 import { Modal } from "@/components/Modal";
+import { authService } from "@/services/auth.service";
+import { ApiError } from "@/services/api";
 import styles from "./Settings.module.scss";
 
 export const Settings = () => {
@@ -15,8 +17,11 @@ export const Settings = () => {
   const [passwordError, setPasswordError] = useState("");
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
-  const [cancelReason, setCancelReason] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteReason, setDeleteReason] = useState("");
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deleteError, setDeleteError] = useState("");
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
   const handleChangePassword = (e: FormEvent) => {
     e.preventDefault();
@@ -49,16 +54,39 @@ export const Settings = () => {
     }, 1000);
   };
 
-  const handleCancelSubscription = () => {
-    console.log("Cancelar assinatura. Motivo:", cancelReason);
-    setIsCancelModalOpen(false);
-    setCancelReason("");
-    alert("Assinatura cancelada. Sentiremos sua falta!");
+  const handleDeleteAccount = async () => {
+    setDeleteError("");
+
+    if (!deletePassword) {
+      setDeleteError("Digite sua senha para confirmar");
+      return;
+    }
+
+    setIsDeletingAccount(true);
+
+    try {
+      await authService.deleteAccount(
+        deletePassword,
+        deleteReason || undefined
+      );
+      alert("Conta excluída com sucesso. Sentiremos sua falta!");
+      navigate("/login");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setDeleteError(error.message);
+      } else {
+        setDeleteError("Erro ao excluir conta. Tente novamente.");
+      }
+    } finally {
+      setIsDeletingAccount(false);
+    }
   };
 
-  const handleUpgrade = () => {
-    console.log("Upgrade para plano anual");
-    alert("Redirecionando para página de pagamento...");
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setDeleteReason("");
+    setDeletePassword("");
+    setDeleteError("");
   };
 
   return (
@@ -133,7 +161,7 @@ export const Settings = () => {
             </Card>
           </section>
 
-          <section className={styles.section}>
+          {/* <section className={styles.section}>
             <div className={styles.sectionHeader}>
               <CreditCard size={20} className={styles.sectionIcon} />
               <h2 className={styles.sectionTitle}>Plano</h2>
@@ -159,7 +187,7 @@ export const Settings = () => {
                 </Button>
               </div>
             </Card>
-          </section>
+          </section> */}
 
           <section className={styles.section}>
             <div className={styles.sectionHeader}>
@@ -170,19 +198,19 @@ export const Settings = () => {
             <Card padding="lg">
               <div className={styles.dangerZone}>
                 <div className={styles.dangerInfo}>
-                  <h3 className={styles.dangerTitle}>Cancelar assinatura</h3>
+                  <h3 className={styles.dangerTitle}>Excluir conta</h3>
                   <p className={styles.dangerDescription}>
-                    Cancele sua assinatura e perca acesso a todas as
-                    funcionalidades premium
+                    Exclua sua conta permanentemente. Todos os seus dados serão
+                    perdidos e não poderão ser recuperados
                   </p>
                 </div>
                 <Button
                   variant="ghost"
                   size="md"
-                  onClick={() => setIsCancelModalOpen(true)}
+                  onClick={() => setIsDeleteModalOpen(true)}
                   className={styles.dangerButton}
                 >
-                  Cancelar assinatura
+                  Excluir conta
                 </Button>
               </div>
             </Card>
@@ -191,30 +219,48 @@ export const Settings = () => {
       </main>
 
       <Modal
-        isOpen={isCancelModalOpen}
-        onClose={() => setIsCancelModalOpen(false)}
-        title="Cancelar assinatura"
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        title="Excluir conta"
       >
         <div className={styles.cancelModal}>
           <p className={styles.cancelWarning}>
-            Tem certeza que deseja cancelar sua assinatura? Você perderá acesso
-            a todas as funcionalidades do Koins.
+            Tem certeza que deseja excluir sua conta? Esta ação é permanente e
+            todos os seus dados serão perdidos para sempre.
           </p>
 
+          {deleteError && (
+            <div className={styles.errorMessage}>{deleteError}</div>
+          )}
+
           <div className={styles.cancelForm}>
+            <Input
+              type="password"
+              label="Digite sua senha para confirmar"
+              placeholder="••••••••"
+              value={deletePassword}
+              onChange={(e) => setDeletePassword(e.target.value)}
+              error={
+                deleteError && !deletePassword ? "Senha é obrigatória" : ""
+              }
+              fullWidth
+              autoComplete="current-password"
+              icon={<Lock size={20} />}
+            />
+
             <label className={styles.cancelLabel}>
               Conte-nos o motivo (opcional)
             </label>
             <textarea
               className={styles.cancelTextarea}
-              placeholder="Por que você está cancelando?"
-              value={cancelReason}
-              onChange={(e) => setCancelReason(e.target.value)}
+              placeholder="Por que você está saindo?"
+              value={deleteReason}
+              onChange={(e) => setDeleteReason(e.target.value)}
               rows={4}
               maxLength={200}
             />
             <span className={styles.cancelCounter}>
-              {cancelReason.length}/200
+              {deleteReason.length}/200
             </span>
           </div>
 
@@ -223,17 +269,19 @@ export const Settings = () => {
               variant="ghost"
               size="md"
               fullWidth
-              onClick={() => setIsCancelModalOpen(false)}
+              onClick={handleCloseDeleteModal}
+              disabled={isDeletingAccount}
             >
-              Manter assinatura
+              Manter conta
             </Button>
             <Button
               variant="secondary"
               size="md"
               fullWidth
-              onClick={handleCancelSubscription}
+              onClick={handleDeleteAccount}
+              loading={isDeletingAccount}
             >
-              Confirmar cancelamento
+              Excluir definitivamente
             </Button>
           </div>
         </div>
@@ -241,4 +289,3 @@ export const Settings = () => {
     </div>
   );
 };
-

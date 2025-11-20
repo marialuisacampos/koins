@@ -1,0 +1,115 @@
+### Koins Backend - Testes de Autenticação
+### Use a extensão REST Client no VSCode ou Postman
+
+@baseUrl = http://localhost:3000
+@email = teste@example.com
+@password = Teste123!
+
+### Health Check
+GET {{baseUrl}}/health
+
+### 1. Cadastro (Signup)
+# @name signup
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Teste User",
+  "email": "{{email}}",
+  "phone": "+5511999999999",
+  "password": "{{password}}",
+  "partnerEmail": "parceiro@example.com"
+}
+
+### 2. Login
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### 3. Refresh Token
+# Primeiro faça login e copie o refreshToken
+POST {{baseUrl}}/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "COLE_O_REFRESH_TOKEN_AQUI"
+}
+
+### 4. Esqueci a Senha
+# @name forgotPassword
+POST {{baseUrl}}/api/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "{{email}}"
+}
+
+### 5. Resetar Senha
+# Primeiro faça forgot-password e copie o token
+POST {{baseUrl}}/api/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "COLE_O_TOKEN_AQUI",
+  "password": "NovaSenha123!"
+}
+
+### 6. Logout
+POST {{baseUrl}}/api/auth/logout
+Content-Type: application/json
+
+### Testes de Validação
+
+### Cadastro com email inválido
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Teste",
+  "email": "email-invalido",
+  "password": "Teste123!"
+}
+
+### Cadastro com senha fraca
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Teste",
+  "email": "novo@example.com",
+  "password": "123"
+}
+
+### Login com credenciais erradas
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "SenhaErrada123!"
+}
+
+### Cadastro com email já existente
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Outro Nome",
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Reset de senha com token inválido
+POST {{baseUrl}}/api/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "token-invalido",
+  "password": "NovaSenha123!"
+}
+
