@@ -7,10 +7,12 @@ import { Button } from "@/components/Button";
 import { Modal } from "@/components/Modal";
 import { authService } from "@/services/auth.service";
 import { ApiError } from "@/services/api";
+import { useToast } from "@/components/Toast";
 import styles from "./Settings.module.scss";
 
 export const Settings = () => {
   const navigate = useNavigate();
+  const { showSuccess } = useToast();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -50,7 +52,7 @@ export const Settings = () => {
       setNewPassword("");
       setConfirmPassword("");
       setIsChangingPassword(false);
-      alert("Senha alterada com sucesso!");
+      showSuccess("Senha alterada com sucesso!");
     }, 1000);
   };
 
@@ -69,7 +71,7 @@ export const Settings = () => {
         deletePassword,
         deleteReason || undefined
       );
-      alert("Conta excluída com sucesso. Sentiremos sua falta!");
+      showSuccess("Conta excluída com sucesso. Sentiremos sua falta!");
       navigate("/login");
     } catch (error) {
       if (error instanceof ApiError) {

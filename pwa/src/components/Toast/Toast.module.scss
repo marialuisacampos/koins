@@ -1,0 +1,91 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.toast {
+  @include flex-center;
+  
+  gap: $spacing-md;
+  min-width: 300px;
+  max-width: 500px;
+  padding: $spacing-md $spacing-lg;
+  background: $color-background;
+  border-radius: $radius-md;
+  box-shadow: $shadow-lg;
+  border: 1px solid $color-border;
+  animation: slideIn 0.3s ease-out;
+  position: relative;
+  z-index: 1000;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.icon {
+  @include flex-center;
+  
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.message {
+  flex: 1;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.closeButton {
+  @include flex-center;
+  
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: $radius-sm;
+  background: transparent;
+  color: $color-text-secondary;
+  cursor: pointer;
+  transition: all $transition-base;
+  padding: 0;
+  border: none;
+
+  &:hover {
+    background: $color-surface;
+    color: $color-text-primary;
+  }
+}
+
+.success {
+  border-left: 4px solid $color-success;
+
+  .icon {
+    color: $color-success;
+  }
+}
+
+.error {
+  border-left: 4px solid $color-error;
+
+  .icon {
+    color: $color-error;
+  }
+}
+
+.info {
+  border-left: 4px solid $color-primary;
+
+  .icon {
+    color: $color-primary;
+  }
+}
+

@@ -7,9 +7,13 @@ import { Dashboard } from "@/pages/Dashboard";
 import { Expenses } from "@/pages/Expenses";
 import { Settings } from "@/pages/Settings";
 import { authService } from "@/services/auth.service";
+import { ToastProvider } from "@/contexts/ToastContext";
+import { Toaster } from "@/components/Toast";
+import { Toast } from "@/components/Toast";
 
 export const App = () => {
   const [isInitialized, setIsInitialized] = useState(false);
+  const [toasts, setToasts] = useState<Toast[]>([]);
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -24,6 +28,10 @@ export const App = () => {
 
     initializeAuth();
   }, []);
+
+  const handleCloseToast = (id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  };
 
   if (!isInitialized) {
     return (
@@ -40,16 +48,19 @@ export const App = () => {
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/cadastro" element={<SignUp />} />
-        <Route path="/recuperar-senha" element={<ForgotPassword />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/extrato" element={<Expenses />} />
-        <Route path="/configuracoes" element={<Settings />} />
-      </Routes>
-    </BrowserRouter>
+    <ToastProvider toasts={toasts} setToasts={setToasts}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/cadastro" element={<SignUp />} />
+          <Route path="/recuperar-senha" element={<ForgotPassword />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/extrato" element={<Expenses />} />
+          <Route path="/configuracoes" element={<Settings />} />
+        </Routes>
+        <Toaster toasts={toasts} onClose={handleCloseToast} />
+      </BrowserRouter>
+    </ToastProvider>
   );
 };

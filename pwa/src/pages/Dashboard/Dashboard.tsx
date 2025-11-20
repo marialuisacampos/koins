@@ -23,6 +23,7 @@ import {
   connectionService,
   ConnectionState,
 } from "@/services/connection.service";
+import { useToast } from "@/components/Toast";
 import styles from "./Dashboard.module.scss";
 
 interface Expense {
@@ -36,6 +37,7 @@ interface Expense {
 
 export const Dashboard = () => {
   const navigate = useNavigate();
+  const { showError } = useToast();
   const [connectionState, setConnectionState] =
     useState<ConnectionState | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -126,7 +128,7 @@ export const Dashboard = () => {
       setInviteEmail("");
     } catch (error) {
       console.error("Erro ao enviar convite:", error);
-      alert("Erro ao enviar convite. Tente novamente.");
+      showError("Erro ao enviar convite. Tente novamente.");
     } finally {
       setIsProcessing(false);
     }
@@ -141,7 +143,7 @@ export const Dashboard = () => {
       await loadConnectionState();
     } catch (error) {
       console.error("Erro ao cancelar convite:", error);
-      alert("Erro ao cancelar convite. Tente novamente.");
+      showError("Erro ao cancelar convite. Tente novamente.");
     } finally {
       setIsProcessing(false);
     }
@@ -156,7 +158,7 @@ export const Dashboard = () => {
       await loadConnectionState();
     } catch (error) {
       console.error("Erro ao aceitar convite:", error);
-      alert("Erro ao aceitar convite. Tente novamente.");
+      showError("Erro ao aceitar convite. Tente novamente.");
     } finally {
       setIsProcessing(false);
     }
@@ -171,7 +173,7 @@ export const Dashboard = () => {
       await loadConnectionState();
     } catch (error) {
       console.error("Erro ao rejeitar convite:", error);
-      alert("Erro ao rejeitar convite. Tente novamente.");
+      showError("Erro ao rejeitar convite. Tente novamente.");
     } finally {
       setIsProcessing(false);
     }
